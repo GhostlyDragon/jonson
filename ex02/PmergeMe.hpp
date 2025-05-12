@@ -6,7 +6,7 @@
 /*   By: aboulakr <aboulakr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/20 18:23:05 by aboulakr          #+#    #+#             */
-/*   Updated: 2025/05/12 06:29:47 by aboulakr         ###   ########.fr       */
+/*   Updated: 2025/05/12 07:57:48 by aboulakr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,6 @@ std::vector<int> generate_jacobsthal_numbers(int limit) {
         previous = current;
         current = next;
     }
-
     return jacobsthal_numbers;
 }
 
@@ -82,6 +81,7 @@ std::vector<int> jhonson_algo(std::vector<int> &sequence, int x)
     std::vector<int> tmp;
     std::vector<int> jacob_numbers;
     std::vector<int> jacobsthal_real_one;
+    std::vector<int> jacob_yes_or_no;
     int tmp2    = 0;
 
     std::cout <<"---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"<<std::endl << "x-> " << x << std::endl;
@@ -195,6 +195,7 @@ std::vector<int> jhonson_algo(std::vector<int> &sequence, int x)
             if (j > (int)(pend.size())) break;
             jacobsthal_sequence.push_back(j);
             jacobsthal_real_one.push_back(j);
+            jacob_yes_or_no.push_back(0);
             if (i != 0)
             {
                 int prev_j = jacobsthal(i - 1);
@@ -267,8 +268,16 @@ std::vector<int> jhonson_algo(std::vector<int> &sequence, int x)
         while(j < jacobsthal_sequence.size())
         {
             std::cout << "j-> " << j << std::endl;
-            if (right > (int)main.size() || k >= jacob_numbers.size())
-                right = main.size();
+            if (k >= jacobsthal_real_one.size() && k < jacob_numbers.size())
+            {
+                if (std::find(jacobsthal_real_one.begin(), jacobsthal_real_one.end(), jacob_numbers[k] - jacobsthal_real_one.back() +1) == jacobsthal_real_one.end())
+                {
+                    right = main.size();
+                }
+            }
+            else
+                if (right > (int)main.size() || k >= jacob_numbers.size())
+                    right = main.size();
             else
                 right = jacob_numbers[k];
             if (flag == 0)
@@ -326,13 +335,19 @@ std::vector<int> jhonson_algo(std::vector<int> &sequence, int x)
             tmp.push_back(sequence[i]);
         }
     }
+    //print tmp
+    for (size_t i = 0; i < tmp.size(); i++)
+    {
+        std::cout << "tmp["<<tmp[i] << "] ";
+    }
+    std::cout << std::endl;
     main.clear();
     pend.clear();
     jacob_numbers.clear();
     jacobsthal_real_one.clear();
     return tmp;
 }
-
+//while true; do ./PmergeMe $(ruby -e 'print (1..3000).to_a.shuffle.join(" ")')|grep "not sorted"; done;
 
 std::vector<int> recursion(std::vector<int> sequence, size_t num_of_pairs, int x)
 {
@@ -343,13 +358,9 @@ std::vector<int> recursion(std::vector<int> sequence, size_t num_of_pairs, int x
         std::vector<int> group1;
         std::vector<int> group2;
         for (size_t j = i; j < i + x && j < sequence.size(); ++j)
-        {
             group1.push_back(sequence[j]);
-        }
         for (size_t j = i + x; j < i + 2 * x && j < sequence.size(); ++j)
-        {
             group2.push_back(sequence[j]);
-        }
         if (group1.back() > group2.back())
         {
             comparisons++;
@@ -359,6 +370,7 @@ std::vector<int> recursion(std::vector<int> sequence, size_t num_of_pairs, int x
                 sequence[i + x + j] = group1[j];
         }
     }
+    std::cout << std::endl;
     for (size_t i = 0; i < sequence.size(); i++)
     {
         std::cout << "sequence["<<sequence[i] << "] ";
